@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Manage Events</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+</head>
+<body>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+        crossorigin="anonymous"></script>
+<div th:replace="topnav :: navbar"></div>
+
+<div class="container-sm">
+    <div class="row">
+        <h4>Ürituse detailid:</h4>
+    </div>
+    <div class="row">
+        <label for="eventName" class="col-sm-2 col-form-label">Ürituse nimi:</label>
+        <div class="col-sm-10">
+            <p id="eventName">[[${event.name}]]</p>
+        </div>
+    </div>
+    <div class="row">
+        <label for="eventDate" class="col-sm-2 col-form-label">Toimumisaeg:</label>
+        <div class="col-sm-10">
+            <p id="eventDate">[[${event.date}]]</p>
+        </div>
+    </div>
+    <div class="row">
+        <label for="eventLocation" class="col-sm-2 col-form-label">Koht:</label>
+        <div class="col-sm-10">
+            <p id="eventLocation">[[${event.location}]]</p>
+        </div>
+    </div>
+</div>
+
+<div class="container-sm">
+    <div class="row">
+        <h4>Osavõtjad:</h4>
+    </div>
+    <div class="row">
+        <h7>Füüsilised isikud:</h7>
+    </div>
+    <table class="table table-striped">
+        <tbody>
+        <tr th:if="${people.empty}">
+            <td colspan="2"> Üritusele pole registreerunud veel ühtegi füüsilist isikut</td>
+        </tr>
+        <th:block th:each="person: ${people}">
+            <tr>
+                <td>[[${person.firstName}]] [[${person.lastName}]]</td>
+                <td>[[${person.personalCode}]]</td>
+                <td>
+                    <a class="h7 mr-3" th:href="@{'/person/edit/' + ${person.participantId}}">Muuda
+                    </a>
+                    <a class="h7" th:href="@{'/person/delete/' + ${person.participantId}}">Kustuta</a>
+                </td>
+            </tr>
+        </th:block>
+        </tbody>
+    </table>
+    <div class="text-left">
+        <h7>Ettevõtted:</h7>
+    </div>
+    <table class="table table-striped">
+        <tbody>
+        <tr th:if="${people.empty}">
+            <td colspan="2"> Üritusele pole registreerunud veel ühtegi ettevõtet</td>
+        </tr>
+        <th:block th:each="company: ${companies}">
+            <tr>
+                <td>[[${company.name}]]</td>
+                <td>[[${company.registryCode}]]</td>
+                <td>
+                    <a class="h7 mr-3" th:href="@{'/company/edit/' + ${company.participantId}}">Muuda
+                    </a>
+                    <a class="h7" th:href="@{'/company/delete/' + ${company.participantId}}">Kustuta</a>
+                </td>
+            </tr>
+        </th:block>
+        </tbody>
+    </table>
+</div>
+
+<div class="container-sm">
+    <div class="row">
+        <h4>Lisa uus osaleja:</h4>
+    </div>
+    <div class="text-left">
+        <div class="form-check form-check-inline">
+            <input class="form-check-input" type="checkbox" onclick="ChangeToPerson()" id="registrationTypePerson"
+                   value="option1">
+            <label class="form-check-label" for="registrationTypePerson">Füüsiline isik</label>
+        </div>
+        <div class="form-check form-check-inline">
+            <input class="form-check-input" type="checkbox" onclick="ChangeToCompany()" id="registrationTypeCompany"
+                   value="option2">
+            <label class="form-check-label" for="registrationTypeCompany">Ettevõte</label>
+        </div>
+
+        <form action="#" ID='personForm' th:action="@{'/events/participants/person/'+ ${event.id}}" method="post"
+              th:object="${person}" style="display: none;">
+            <div class="form-group row">
+                <label for="inputFirstName" class="col-sm-2 col-form-label">Eesnimi</label>
+                <div class="col-sm-10">
+                    <input type="text" th:field="*{firstName}" class="form-control" id="inputFirstName"
+                           placeholder="Eesinimi">
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="inputLastName" class="col-sm-2 col-form-label">Perekonnanimi</label>
+                <div class="col-sm-10">
+                    <input type="text" th:field="*{lastName}" class="form-control" id="inputLastName"
+                           placeholder="Perekonnanimi">
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="inputIdentityCode" class="col-sm-2 col-form-label">Isikukood</label>
+                <div class="col-sm-10">
+                    <input type="text" th:field="*{personalCode}" class="form-control" id="inputIdentityCode"
+                           placeholder="Isikukood">
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-2 col-form-label">Makseviis</label>
+                <div class="col-sm-5">
+                    <select th:field="*{paymentMethod}">
+                        <option th:each="payment : ${paymentMethods}" th:value="${payment}" th:text="${payment}">
+                    </select>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="inputExtrainfo" class="col-sm-2 col-form-label">Lisainfo</label>
+                <div class="col-md-10">
+                    <input type="text" th:field="*{extraInfo}" class="form-control" id="inputExtrainfo"
+                           placeholder="Lisainfo">
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-sm-10">
+                    <button type="submit" class="btn btn-primary">Lisa osaleja</button>
+                </div>
+            </div>
+        </form>
+
+        <form action="#" ID='companyForm' th:action="@{'/events/participants/company/'+ ${event.id}}" method="post"
+              th:object="${company}" style="display: none;">
+            <div class="form-group row">
+                <label for="inputName" class="col-sm-2 col-form-label">Ettevõtte nimi</label>
+                <div class="col-sm-10">
+                    <input type="text" th:field="*{name}" class="form-control" id="inputName"
+                           placeholder="Ettevõtte nimi">
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="inputRegistryCode" class="col-sm-2 col-form-label">Registrikood</label>
+                <div class="col-sm-10">
+                    <input type="text" th:field="*{registryCode}" class="form-control" id="inputRegistryCode"
+                           placeholder="Registrikood">
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="inputNumberOfParticipants" class="col-sm-2 col-form-label">Osalejate arv</label>
+                <div class="col-sm-10">
+                    <input type="number" th:field="*{numberOfParticipants}" class="form-control"
+                           id="inputNumberOfParticipants" min="1" max="100000">
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-2 col-form-label">Makseviis</label>
+                <div class="col-sm-5">
+                    <select th:field="*{paymentMethod}">
+                        <option th:each="payment : ${paymentMethods}" th:value="${payment}" th:text="${payment}">
+                    </select>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="inputExtrainfoComp" class="col-sm-2 col-form-label">Lisainfo</label>
+                <div class="col-md-10">
+                    <input type="text" th:field="*{extraInfo}" class="form-control" id="inputExtrainfoComp"
+                           placeholder="Lisainfo">
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-sm-10">
+                    <button type="submit" class="btn btn-primary">Lisa osaleja</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<div th:replace="footer :: footer"></div>
+</body>
+
+
+<script type="text/javascript">
+  personForm = document.getElementById('personForm');
+  companyForm = document.getElementById('companyForm');
+  registrationTypePersonButton = document.getElementById('registrationTypePerson');
+  registrationTypeCompanyButton = document.getElementById('registrationTypeCompany');
+function ChangeToPerson() {
+  if (registrationTypePersonButton.checked) {
+    personForm.style.display = 'block';
+    companyForm.style.display = 'none';
+    registrationTypePersonButton.checked = true;
+    registrationTypeCompanyButton.checked = false;
+  }
+}
+function ChangeToCompany() {
+  if (registrationTypeCompanyButton.checked) {
+    personForm.style.display = 'none';
+    companyForm.style.display = 'block';
+    registrationTypePersonButton.checked = false;
+    registrationTypeCompanyButton.checked = true;
+  }
+}
+
+</script>
+</html>

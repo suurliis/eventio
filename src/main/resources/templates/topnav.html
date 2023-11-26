@@ -1,0 +1,38 @@
+<div th:fragment="navbar">
+  <div class="container">
+  <nav class="navbar navbar-expand-lg navbar-light bg-light" style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;">
+    <a class="navbar-brand" href="#">
+      <embed src="logo.svg" class="d-inline-block align-top" alt="Nullum logo">
+    </a>
+
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav">
+        <li class="nav-item active">
+          <a class="nav-link" href="/">Avaleht <span class="sr-only"></span></a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/events/new">Ürituse lisamine</a>
+        </li>
+      </ul>
+    </div>
+
+    <a>
+      <object type="image/svg+xml" data="symbol.svg" class="d-inline-block align-top" alt="Sümbol"></object>
+    </a>
+
+  </nav>
+  </div>
+</div>
+
+
+<div th:fragment="pagenav">
+  <div class="container">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light" style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;">
+      <div class="text-md-center bg-primary text-white">[[${pagePurpose}]]</div>
+      <div>  <a href="#">
+        <img src="libled.jpg"  alt="Looduspilt">
+      </a></div>
+
+    </nav>
+  </div>
+</div>

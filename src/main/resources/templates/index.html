@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Main page</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+</head>
+<body>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+        crossorigin="anonymous"></script>
+<div th:replace="topnav :: navbar"></div>
+<div class="container-fluid text-center">
+  <div th:if="${message}" class="alert alert-success text-center">
+    [[${message}]]
+  </div>
+</div>
+
+<div class="container text-center" style="grid-row-gap: 180px;">
+  <div class="row">
+    <div class="col-md">
+      <p class="text-md-center bg-primary text-white" style="display: flex;">Sed nec elit vestibulum, tincidunt orci et, sagittis
+        ex. Vestibulum rutrum neque suscipit ante mattis maximus. Nulla non sapien viverra,
+        lobortis lorem non, accumsan metus.</p>
+    </div>
+    <div class="col-md">
+      <img th:src="@{pilt.jpg}" alt="pargipink"/>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md">
+      <p class="text-md-center bg-primary text-white"> Tulevased üritused</p>
+      <div class="table-responsive">
+        <table class="table">
+          <tbody>
+          <th:block th:each="event, iStat: ${presentEvents}">
+            <tr>
+              <td>[[${iStat.index + 1}]].</td>
+              <td>[[${event.name}]]</td>
+              <td>[[${event.date}]]</td>
+              <td>
+                <a class="h7 mr-3" th:href="@{'/events/participants/' + ${event.id}}">Osalejad
+                </a>
+                <a class="h7" th:href="@{'/events/delete/' + ${event.id}}">Kustuta</a>
+              </td>
+            </tr>
+          </th:block>
+          </tbody>
+        </table>
+      </div>
+      <div class="m-2">
+        <a class="h7" th:href="@{/events/new}">Lisa uus üritus</a>
+      </div>
+    </div>
+    <div class="col-md">
+      <p class="text-md-center bg-primary text-white"> Toimunud üritused</p>
+      <div class="table-responsive">
+        <table class="table">
+          <tbody>
+          <th:block th:each="event, iStat: ${pastEvents}">
+            <tr>
+              <td>[[${iStat.index + 1}]].</td>
+              <td>[[${event.name}]]</td>
+              <td>[[${event.date}]]</td>
+              <td>
+                <a class="h7 mr-3" th:href="@{'/events/old/participants/' + ${event.id}}">Osalejad
+                </a>
+              </td>
+            </tr>
+          </th:block>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div th:replace="footer :: footer"></div>
+</body>
+</html>
