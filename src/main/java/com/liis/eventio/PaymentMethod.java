@@ -1,5 +1,7 @@
 package com.liis.eventio;
 
+import java.util.Arrays;
+
 public enum PaymentMethod {
-    sularaha, pangaülekanne
+    SULARAHA, PANGAÜLEKANNE;
 }

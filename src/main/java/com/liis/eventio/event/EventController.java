@@ -1,5 +1,6 @@
 package com.liis.eventio.event;
 
+import com.liis.eventio.PaymentMethod;
 import com.liis.eventio.participant.Company;
 import com.liis.eventio.participant.Participant;
 import com.liis.eventio.participant.Person;
@@ -17,6 +18,8 @@ import java.util.List;
 import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Controller
 public class EventController {
@@ -111,8 +114,9 @@ public class EventController {
                 List<Participant> onlyCompanies = participants.stream().filter(companyPredicate).toList();
                 logger.log(Level.INFO, "Participants: " + onlyCompanies);
 
-                List<String> paymentMethods = Arrays.asList("sularaha", "pangaülekanne");
-                model.addAttribute("paymentMethods", paymentMethods);
+                List<String> paymentMethods = Stream.of(PaymentMethod.values())
+                        .map(Enum::name)
+                        .collect(Collectors.toList());
 
                 model.addAttribute("people", onlyPeople);
                 model.addAttribute("companies", onlyCompanies);
@@ -120,6 +124,8 @@ public class EventController {
 
                 model.addAttribute("person", new Person());
                 model.addAttribute("company", new Company());
+
+                model.addAttribute("pagePurpose", "Ürituse detailid");
 
                 return "event_participants";
             } catch (EventNotFoundException e) {
@@ -150,6 +156,7 @@ public class EventController {
                 model.addAttribute("companies", onlyCompanies);
                 model.addAttribute("event", event);
 
+                model.addAttribute("pagePurpose", "Ürituse detailid");
                 return "past_event_participants";
             } catch (EventNotFoundException e) {
                 redirectAttributes.addFlashAttribute("message", e.getMessage());

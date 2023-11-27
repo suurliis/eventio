@@ -1,5 +1,6 @@
 package com.liis.eventio.participant;
 
+import com.liis.eventio.PaymentMethod;
 import com.liis.eventio.event.EventNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -14,6 +15,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Controller
 public class ParticipantController {
@@ -34,6 +37,7 @@ public class ParticipantController {
         {
             model.addAttribute("person", new Person());
             model.addAttribute("pageTitle", "Lisa uus füüsiline isik");
+            model.addAttribute("pagePurpose", "Osavõtja lisamine");
             return "person_form";
         }
 
@@ -42,6 +46,7 @@ public class ParticipantController {
         {
             model.addAttribute("company", new Company());
             model.addAttribute("pageTitle", "Lisa uus ettevõte");
+            model.addAttribute("pagePurpose", "Osavõtja lisamine");
             return "company_form";
         }
 
@@ -51,7 +56,7 @@ public class ParticipantController {
             participantService.savePerson(person);
             redirectAttributes.addFlashAttribute("message", "Füüsiline isik (perekonnanimi: " + person.getLastName() + ") on " +
                     "salvestatud.");
-            return "index";
+            return "redirect:/";
         }
 
     @PostMapping("/company/save")
@@ -59,7 +64,7 @@ public class ParticipantController {
         {
             participantService.saveCompany(company);
             redirectAttributes.addFlashAttribute("message", "Ettevõte (ID: " + company.participantId + ") on salvestatud.");
-            return "index";
+            return "redirect:/";
         }
 
     @PostMapping("/events/participants/person/{id}")
@@ -75,7 +80,7 @@ public class ParticipantController {
             return "redirect:/";
         }
         model.clear();
-        return "index";
+        return "redirect:/";
     }
 
     @PostMapping("/events/participants/company/{id}")
@@ -97,12 +102,15 @@ public class ParticipantController {
     @GetMapping("/person/edit/{id}")
     public String showEditFormPerson(@PathVariable("id") Integer id, Model model, RedirectAttributes redirectAttributes)
         {
-            List<String> paymentMethods = Arrays.asList("sularaha", "pangaülekanne");
+            List<String> paymentMethods = Stream.of(PaymentMethod.values())
+                    .map(Enum::name)
+                    .collect(Collectors.toList());
             model.addAttribute("paymentMethods", paymentMethods);
             try {
                 Person person = (Person) participantService.get(id);
                 model.addAttribute("person", person);
-                model.addAttribute("pageTitle", "Edit Person: " + person.getLastName());
+                model.addAttribute("pageTitle", "Muuda osavõtjat: " + person.getLastName());
+                model.addAttribute("pagePurpose", "Osavõtja info");
                 redirectAttributes.addFlashAttribute("message", "Füüsiline isik (perekonnanimi: " + id + ") on " +
                         "salvestatud.");
                 return "person_form";
@@ -124,12 +132,15 @@ public class ParticipantController {
     public String showEditFormCompany(@PathVariable("id") Integer id, Model model,
                                       RedirectAttributes redirectAttributes)
         {
-            List<String> paymentMethods = Arrays.asList("sularaha", "pangaülekanne");
+            List<String> paymentMethods = Stream.of(PaymentMethod.values())
+                    .map(Enum::name)
+                    .collect(Collectors.toList());
             model.addAttribute("paymentMethods", paymentMethods);
             try {
                 Company company = (Company) participantService.get(id);
                 model.addAttribute("company", company);
-                model.addAttribute("pageTitle", "Muuda ettevõtet: " + company.getName());
+                model.addAttribute("pagePurpose", "Osavõtja info");
+                model.addAttribute("pageTitle", "Muuda osavõtjat: " + company.getName());
                 redirectAttributes.addFlashAttribute("message", "Ettevõte (ID: " + id + ") on salvestatud.");
                 return "company_form";
             } catch (ParticipantNotFoundException e) {

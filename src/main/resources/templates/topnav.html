@@ -2,7 +2,7 @@
   <div class="container">
   <nav class="navbar navbar-expand-lg navbar-light bg-light" style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;">
     <a class="navbar-brand" href="#">
-      <embed src="logo.svg" class="d-inline-block align-top" alt="Nullum logo">
+      <img th:src="@{/images/logo.svg}" alt="Nullum logo"/>
     </a>
 
     <div class="collapse navbar-collapse" id="navbarNav">
@@ -17,7 +17,7 @@
     </div>
 
     <a>
-      <object type="image/svg+xml" data="symbol.svg" class="d-inline-block align-top" alt="Sümbol"></object>
+      <img th:src="@{/images/symbol.svg}" alt="Sümbol"/>
     </a>
 
   </nav>
@@ -26,13 +26,16 @@
 
 
 <div th:fragment="pagenav">
-  <div class="container">
-    <nav class="navbar navbar-expand-lg navbar-light bg-light" style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;">
-      <div class="text-md-center bg-primary text-white">[[${pagePurpose}]]</div>
-      <div>  <a href="#">
-        <img src="libled.jpg"  alt="Looduspilt">
-      </a></div>
 
-    </nav>
+  <div class="container overflow-hidden">
+    <div class="row g-0">
+      <div class="col-md-4 d-flex justify-content-center align-items-center" style="background-color: #4a90e2;">
+        <h2 class="text-md-center text-white">[[${pagePurpose}]]</h2>
+      </div>
+      <div class="col-md-8">
+        <img th:src="@{/images/libled.jpg}" alt="Looduspilt" class="image-responsive"/>
+      </div>
+    </div>
   </div>
+
 </div>
