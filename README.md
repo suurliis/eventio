@@ -16,12 +16,7 @@ Tegemist on Java rakendusega, mis kasutab Springi ja Thymeleafi, et luua fronten
 
 ### Ülevaade rakendusest
 
-Rakenduse funktsionaalsus jaguneb kahe suure osa: ürituse ja osavõtja vahel.
-Rakenduse backendi failid on jagatud omakorda kaustadesse:
-* entity: sisaldab POJO klasse
-* service: vastutab objektide salvestamise eest
-* repository: loob suhted andmebaasi ja objektide vahel
-* controller: haldab, mis juhtub vaadete külastamisel ja objektide loomisel või kustutamisel
+Rakenduse funktsionaalsus jaguneb kahe suure osa: ürituse ja osavõtja vahel. Backendi failid mõlema osa jaoks on ära jaotatud kaustadesse event ja participant, sisaldes mõlema osa entity, service, controller ja repository faile.
 Rakenduse HTML failid on leitavad kaustas /resources/templates ja pildifailid on kaustas /static/images.
 Rakendusel on mõned näidistestid, mis asuvad kaustas test/java/com.liis.eventio
 
