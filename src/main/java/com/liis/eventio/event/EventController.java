@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.function.Predicate;
@@ -117,6 +116,8 @@ public class EventController {
                 List<String> paymentMethods = Stream.of(PaymentMethod.values())
                         .map(Enum::name)
                         .collect(Collectors.toList());
+
+                model.addAttribute("paymentMethods", paymentMethods);
 
                 model.addAttribute("people", onlyPeople);
                 model.addAttribute("companies", onlyCompanies);

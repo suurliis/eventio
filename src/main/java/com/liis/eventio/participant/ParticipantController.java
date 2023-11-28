@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -38,6 +37,10 @@ public class ParticipantController {
             model.addAttribute("person", new Person());
             model.addAttribute("pageTitle", "Lisa uus füüsiline isik");
             model.addAttribute("pagePurpose", "Osavõtja lisamine");
+            List<String> paymentMethods = Stream.of(PaymentMethod.values())
+                    .map(Enum::name)
+                    .collect(Collectors.toList());
+            model.addAttribute("paymentMethods", paymentMethods);
             return "person_form";
         }
 
@@ -47,6 +50,10 @@ public class ParticipantController {
             model.addAttribute("company", new Company());
             model.addAttribute("pageTitle", "Lisa uus ettevõte");
             model.addAttribute("pagePurpose", "Osavõtja lisamine");
+            List<String> paymentMethods = Stream.of(PaymentMethod.values())
+                    .map(Enum::name)
+                    .collect(Collectors.toList());
+            model.addAttribute("paymentMethods", paymentMethods);
             return "company_form";
         }
 
@@ -69,35 +76,45 @@ public class ParticipantController {
 
     @PostMapping("/events/participants/person/{id}")
     public String saveNewPersonToEvent(@PathVariable("id") Integer id,
-                                            Person person, RedirectAttributes redirectAttributes, final ModelMap model) {
-        participantService.saveParticipant(person);
-        logger.log(Level.INFO, "Added new participant: " + person);
-        try {
-            participantService.addParticipantToEvent(person, id);
-            logger.log(Level.INFO, "Added new participant to event: " + id);
-        } catch (EventNotFoundException | ParticipantNotFoundException e) {
-            redirectAttributes.addFlashAttribute("message", e.getMessage());
+                                       Person person, RedirectAttributes redirectAttributes, final ModelMap model)
+        {
+            List<String> paymentMethods = Stream.of(PaymentMethod.values())
+                    .map(Enum::name)
+                    .collect(Collectors.toList());
+            model.addAttribute("paymentMethods", paymentMethods);
+            participantService.saveParticipant(person);
+            logger.log(Level.INFO, "Added new participant: " + person);
+            try {
+                participantService.addParticipantToEvent(person, id);
+                logger.log(Level.INFO, "Added new participant to event: " + id);
+            } catch (EventNotFoundException | ParticipantNotFoundException e) {
+                redirectAttributes.addFlashAttribute("message", e.getMessage());
+                return "redirect:/";
+            }
+            model.clear();
             return "redirect:/";
         }
-        model.clear();
-        return "redirect:/";
-    }
 
     @PostMapping("/events/participants/company/{id}")
     public String saveNewCompanyToEvent(@PathVariable("id") Integer id,
-                                       Company company, RedirectAttributes redirectAttributes, final ModelMap model) {
-        participantService.saveParticipant(company);
-        logger.log(Level.INFO, "Added new participant: " + company);
-        try {
-            participantService.addParticipantToEvent(company, id);
-            logger.log(Level.INFO, "Added new participant to event: " + id);
-        } catch (EventNotFoundException | ParticipantNotFoundException e) {
-            redirectAttributes.addFlashAttribute("message", e.getMessage());
+                                        Company company, RedirectAttributes redirectAttributes, final ModelMap model)
+        {
+            List<String> paymentMethods = Stream.of(PaymentMethod.values())
+                    .map(Enum::name)
+                    .collect(Collectors.toList());
+            model.addAttribute("paymentMethods", paymentMethods);
+            participantService.saveParticipant(company);
+            logger.log(Level.INFO, "Added new participant: " + company);
+            try {
+                participantService.addParticipantToEvent(company, id);
+                logger.log(Level.INFO, "Added new participant to event: " + id);
+            } catch (EventNotFoundException | ParticipantNotFoundException e) {
+                redirectAttributes.addFlashAttribute("message", e.getMessage());
+                return "redirect:/";
+            }
+            model.clear();
             return "redirect:/";
         }
-        model.clear();
-        return "index";
-    }
 
     @GetMapping("/person/edit/{id}")
     public String showEditFormPerson(@PathVariable("id") Integer id, Model model, RedirectAttributes redirectAttributes)

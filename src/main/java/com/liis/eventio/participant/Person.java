@@ -19,6 +19,6 @@ public class Person extends Participant {
     private String personalCode;
     @Column(nullable = false, name="payment_method")
     private String paymentMethod;
-    @Column(length = 1000, name="extra_info")
+    @Column(length = 1500, name="extra_info")
     private String extraInfo;
 }
